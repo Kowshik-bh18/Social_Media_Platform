@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{% static 'users/styles.css' %}" rel="stylesheet" />
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
+    <title>Photo App</title>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <nav class="bg-white shadow-md">
+      <div
+        class="container mx-auto px-4 py-3 flex items-center justify-between"
+      >
+        <!-- Logo and Brand -->
+        <a href="" class="flex items-center space-x-2">
+          <img
+            src="{% static 'users/images/social.png' %}"
+            class="h-8 w-8"
+            alt="Logo"
+          />
+          <span class="text-xl font-bold text-gray-700">Photo App</span>
+        </a>
+
+        <!-- Navigation Links -->
+        <div class="flex items-center space-x-4">
+          {% if request.user.is_authenticated %}
+          <a
+            href="{% url 'logout' %}"
+            class="text-gray-600 hover:text-blue-600 font-medium transition duration-150 ease-in-out"
+          >
+            Logout
+          </a>
+          {% elif request.resolver_match.url_name != 'login' %}
+          <a
+            href="{% url 'login' %}"
+            class="text-gray-600 hover:text-blue-600 font-medium transition duration-150 ease-in-out"
+          >
+            Login
+          </a>
+          {% endif %}
+          <a
+            href="#"
+            class="text-gray-600 hover:text-blue-600 font-medium transition duration-150 ease-in-out"
+          >
+            Link1
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="py-6 px-4">{% block body %}{% endblock %}</main>
+  </body>
+</html>

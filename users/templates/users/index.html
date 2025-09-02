@@ -1,0 +1,607 @@
+{% extends "users/base.html" %} {% load mathfilters %} {% load static %} 
+{% block body %}
+
+<!-- Background Animation -->
+<div
+  class="relative min-h-screen overflow-hidden bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-200 dark:from-gray-900 dark:via-gray-800 dark:to-black"
+>
+  <!-- Animated Background Elements -->
+  <div class="absolute inset-0 opacity-20 pointer-events-none">
+    <!-- Floating Orbs -->
+    <div
+      class="floating-orb absolute top-20 left-20 w-32 h-32 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl"
+    ></div>
+    <div
+      class="floating-orb-delayed absolute top-40 right-32 w-24 h-24 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full blur-lg"
+    ></div>
+    <div
+      class="floating-orb absolute bottom-32 left-1/4 w-20 h-20 bg-gradient-to-r from-green-400 to-blue-400 rounded-full blur-lg"
+    ></div>
+
+    <!-- Wavy Background -->
+    <svg
+      class="absolute bottom-0 w-full"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1440 320"
+    >
+      <path
+        fill="#6366f1"
+        fill-opacity="0.25"
+        d="M0,160L30,165.3C60,171,120,181,180,176C240,171,300,149,360,138.7C420,128,480,128,540,138.7C600,149,660,171,720,186.7C780,203,840,213,900,186.7C960,160,1020,96,1080,69.3C1140,43,1200,53,1260,80C1320,107,1380,149,1410,170.7L1440,192L1440,320L0,320Z"
+      ></path>
+    </svg>
+  </div>
+
+  <!-- Main Content -->
+  <div class="relative z-10 px-4 py-12 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+    <!-- Current User Welcome Section -->
+    <div class="text-center mb-12 fade-in">
+      <h1
+        class="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600"
+      >
+        Welcome, {{ request.user.username }}
+      </h1>
+
+      {% if request.user.profile.photo %}
+      <div class="relative inline-block">
+        <img
+          src="{{ request.user.profile.photo.url }}"
+          alt="Your Profile Picture"
+          class="mx-auto w-28 h-28 object-cover rounded-full border-4 border-indigo-500 shadow-lg hover:scale-105 transform transition duration-300 pulse-ring"
+        />
+        <div
+          class="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 hover:opacity-20 transition-opacity duration-300"
+        ></div>
+      </div>
+      {% else %}
+      <div class="relative inline-block">
+        <div
+          class="mx-auto w-28 h-28 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full border-4 border-indigo-600 shadow-lg flex items-center justify-center hover:scale-105 transform transition duration-300 pulse-ring"
+        >
+          <span class="text-white text-2xl font-bold"
+            >{{ request.user.username }}</span
+          >
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Create Post Button -->
+    <div class="text-center mb-8 fade-in">
+      <button
+        class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-8 py-3 rounded-full font-semibold shadow-lg transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-300"
+      >
+        ✨ Create New Post
+      </button>
+    </div>
+
+    <!-- Posts Section -->
+    <div class="grid gap-8">
+      {% for p in post %}
+      <article
+        class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden transform hover:scale-[1.02] transition-all duration-300 fade-in border border-white/20"
+      >
+        <!-- Post Header -->
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold"
+            >
+              {{ p.user}}
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 dark:text-white">
+                {{ p.user }}
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                <span class="inline-flex items-center">
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                  {{ p.created }}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Post Image -->
+        {% if p.image %}
+        <div class="relative overflow-hidden">
+          <img
+            src="{{ p.image.url }}"
+            alt="{{ p.title }}"
+            class="w-full h-80 object-cover hover:scale-105 transition-transform duration-500"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"
+          ></div>
+        </div>
+        {% endif %}
+
+        <!-- Post Content -->
+        <div class="p-6">
+          <h2
+            class="text-2xl font-bold text-gray-900 dark:text-white mb-3 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
+          >
+            {{ p.title }}
+          </h2>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+            {{ p.caption }}
+          </p>
+
+          <!-- Enhanced Interaction Icons -->
+          <div
+            class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700"
+          >
+            <div class="flex items-center space-x-6">
+              <!-- Like Button -->
+              <button
+                id="{{p.id}}"
+                class="btn_like group flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors duration-200"
+                data-post-id="{{p.id}}"
+              >
+                <div
+                  class="p-2 rounded-full group-hover:bg-red-50 dark:group-hover:bg-red-900/20 transition-colors duration-200"
+                >
+                  {% if request.user in p.liked_by.all %}
+                  <img
+                    class="w-6 h-6 like-icon"
+                    src="{% static 'users/images/red_like.png' %}"
+                    alt="Unlike"
+                    data-liked="true"
+                  />
+                  {% else %}
+                  <img
+                    class="w-6 h-6 like-icon"
+                    src="{% static 'users/images/white_like.png' %}"
+                    alt="Like"
+                    data-liked="false"
+                  />
+                  {% endif %}
+                </div>
+                <span class="text-sm font-medium">Like</span>
+              </button>
+
+              <!-- Comment Button -->
+              <button
+                class="group flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 transition-colors duration-200"
+              >
+                <div
+                  class="p-2 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors duration-200"
+                >
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                    ></path>
+                  </svg>
+                </div>
+                <span class="text-sm font-medium">Comment</span>
+              </button>
+
+              <!-- Share Button -->
+              <button
+                class="group flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-green-500 transition-colors duration-200"
+              >
+                <div
+                  class="p-2 rounded-full group-hover:bg-green-50 dark:group-hover:bg-green-900/20 transition-colors duration-200"
+                >
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+                    ></path>
+                  </svg>
+                </div>
+                <span class="text-sm font-medium">Share</span>
+              </button>
+            </div>
+
+            <!-- Bookmark Button -->
+            <button
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Enhanced Like Count Display -->
+          <div
+            class="like-count-container mt-3 text-sm text-gray-600 dark:text-gray-400 font-medium"
+            data-post-id="{{p.id}}"
+          >
+            {% if p.liked_by.count < 1 %}
+            <!-- No likes -->
+            {% elif p.liked_by.count == 1 %}
+            <span class="like-text flex items-center">
+              <svg
+                class="w-4 h-4 mr-1 text-red-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              {{p.liked_by.first}} likes this
+            </span>
+            {% elif p.liked_by.count > 1 %}
+            <span class="like-text flex items-center">
+              <svg
+                class="w-4 h-4 mr-1 text-red-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              {{p.liked_by.first}} & {{ p.liked_by.count|sub:1 }} others like
+              this
+            </span>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+      {% empty %}
+      <div class="text-center py-16 fade-in">
+        <div
+          class="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-gray-700 dark:to-gray-600 rounded-full flex items-center justify-center"
+        >
+          <svg
+            class="w-12 h-12 text-indigo-500 dark:text-indigo-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+            ></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          No posts yet
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">
+          Be the first to share something amazing!
+        </p>
+        <button
+          class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg transform hover:scale-105 transition-all duration-300"
+        >
+          Create Your First Post
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Enhanced Animations and Styles -->
+<style>
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-20px) rotate(180deg);
+    }
+  }
+
+  @keyframes floatDelayed {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(-180deg);
+    }
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+    }
+  }
+
+  @keyframes heartBeat {
+    0% {
+      transform: scale(1);
+    }
+    14% {
+      transform: scale(1.3);
+    }
+    28% {
+      transform: scale(1);
+    }
+    42% {
+      transform: scale(1.3);
+    }
+    70% {
+      transform: scale(1);
+    }
+  }
+
+  .fade-in {
+    animation: fadeInUp 0.8s ease-out both;
+  }
+
+  .fade-in:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .fade-in:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .fade-in:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+
+  .floating-orb {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .floating-orb-delayed {
+    animation: floatDelayed 8s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  .pulse-ring {
+    animation: pulse-ring 2s infinite;
+  }
+
+  /* Enhanced Like button styles */
+  .btn_like {
+    position: relative;
+    cursor: pointer;
+    border: none;
+    background: none;
+    outline: none;
+  }
+
+  .btn_like:hover .like-icon {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+  }
+
+  .btn_like:active .like-icon {
+    transform: scale(0.95);
+  }
+
+  .btn_like.loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .btn_like.liked .like-icon {
+    animation: heartBeat 0.6s ease-in-out;
+  }
+
+  /* Like count animation */
+  .like-count-container {
+    transition: all 0.3s ease;
+  }
+
+  .like-count-container.updating {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+
+  /* Glassmorphism effect */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+  }
+
+  /* Smooth transitions for all interactive elements */
+  button,
+  .btn_like {
+    transition: all 0.2s ease;
+  }
+</style>
+
+<!-- Enhanced JavaScript with Full Like Functionality -->
+<script type="text/javascript">
+  window.CSRF_TOKEN = "{{csrf_token}}";
+
+  $(document).on("click", ".btn_like", function (e) {
+    e.preventDefault();
+
+    let post_id = $(this).data("post-id") || this.id;
+    let button = $(this);
+    let likeIcon = button.find(".like-icon");
+    let likeCountContainer = $(
+      `.like-count-container[data-post-id="${post_id}"]`
+    );
+    let isCurrentlyLiked = likeIcon.data("liked");
+
+    console.log("=== LIKE REQUEST ===");
+    console.log("Post ID:", post_id);
+    console.log("Currently liked:", isCurrentlyLiked);
+
+    // Validate post_id
+    if (!post_id) {
+      console.error("No post ID found");
+      return;
+    }
+
+    // Add loading state and animation
+    button.addClass("loading");
+    likeCountContainer.addClass("updating");
+
+    // Add immediate visual feedback
+    if (!isCurrentlyLiked) {
+      button.addClass("liked");
+    }
+
+    $.ajax({
+      method: "POST",
+      url: "/posts/like/",
+      data: {
+        post_id: post_id,
+        csrfmiddlewaretoken: window.CSRF_TOKEN,
+      },
+      timeout: 10000,
+      success: function (data, textStatus, xhr) {
+        console.log("=== SUCCESS ===");
+        console.log("Response:", data);
+
+        if (data.success) {
+          // Update like icon with smooth transition
+          if (data.liked) {
+            likeIcon.attr("src", "{% static 'users/images/red_like.png' %}");
+            likeIcon.attr("alt", "Unlike");
+            likeIcon.data("liked", true);
+            button.addClass("liked");
+          } else {
+            likeIcon.attr("src", "{% static 'users/images/white_like.png' %}");
+            likeIcon.attr("alt", "Like");
+            likeIcon.data("liked", false);
+            button.removeClass("liked");
+          }
+
+          // Update like count display with enhanced styling
+          let likeCount = data.like_count || 0;
+          let likeText = "";
+
+          if (likeCount === 0) {
+            likeText = "";
+          } else if (likeCount === 1) {
+            likeText = data.liked
+              ? "{{ request.user.username }} likes this"
+              : "Someone likes this";
+          } else {
+            likeText = data.liked
+              ? `{{ request.user.username }} & ${
+                  likeCount - 1
+                } others like this`
+              : `${likeCount} people like this`;
+          }
+
+          // Update with heart icon
+          if (likeCount === 0) {
+            likeCountContainer.html("");
+          } else {
+            likeCountContainer.html(`
+              <span class="like-text flex items-center">
+                <svg class="w-4 h-4 mr-1 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                </svg>
+                ${likeText}
+              </span>
+            `);
+          }
+
+          // Add success animation
+          setTimeout(() => {
+            button.removeClass("liked");
+          }, 600);
+        } else {
+          console.error("Server returned success=false");
+          // Reset visual state on error
+          button.removeClass("liked");
+          alert("Failed to update like status");
+        }
+      },
+      error: function (xhr, textStatus, errorThrown) {
+        console.log("=== ERROR ===");
+        console.error("Status:", xhr.status);
+        console.error("Error:", errorThrown);
+        console.error("Response:", xhr.responseText);
+
+        // Reset visual state on error
+        button.removeClass("liked");
+
+        // Show user-friendly error messages
+        if (xhr.status === 404) {
+          alert(
+            "Like endpoint not found. Please check your URL configuration."
+          );
+        } else if (xhr.status === 500) {
+          alert("Server error occurred. Please try again.");
+        } else if (xhr.status === 403) {
+          alert("Permission denied. Please log in again.");
+        } else if (xhr.status === 0) {
+          alert("Network error. Please check your connection.");
+        } else {
+          alert("An error occurred. Please try again.");
+        }
+      },
+      complete: function () {
+        // Remove loading state
+        button.removeClass("loading");
+        likeCountContainer.removeClass("updating");
+        console.log("=== REQUEST COMPLETE ===");
+      },
+    });
+  });
+
+  // Optional: Add keyboard support for accessibility
+  $(document).on("keydown", ".btn_like", function (e) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      $(this).click();
+    }
+  });
+</script>
+
+{% endblock %}

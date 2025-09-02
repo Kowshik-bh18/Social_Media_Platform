@@ -1,0 +1,399 @@
+{% extends "users/base.html" %}
+{% load mathfilters %}
+{% load static %}
+{% block body %}
+
+<!-- Beautiful Background with Orbs -->
+<div class="relative min-h-screen overflow-hidden bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-200 dark:from-gray-900 dark:via-gray-800 dark:to-black">
+  <div class="absolute inset-0 opacity-20 pointer-events-none">
+    <div class="floating-orb absolute top-20 left-20 w-32 h-32 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl"></div>
+    <div class="floating-orb-delayed absolute top-40 right-32 w-24 h-24 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full blur-lg"></div>
+    <div class="floating-orb absolute bottom-32 left-1/4 w-20 h-20 bg-gradient-to-r from-green-400 to-blue-400 rounded-full blur-lg"></div>
+    <svg class="absolute bottom-0 w-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+      <path fill="#6366f1" fill-opacity="0.25"
+        d="M0,160L30,165.3C60,171,120,181,180,176C240,171,300,149,360,138.7C420,128,480,128,540,138.7C600,149,660,171,720,186.7C780,203,840,213,900,186.7C960,160,1020,96,1080,69.3C1140,43,1200,53,1260,80C1320,107,1380,149,1410,170.7L1440,192L1440,320L0,320Z" />
+    </svg>
+  </div>
+
+  <!-- Posts Wrapper -->
+  <div class="relative z-10 px-4 py-12 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+    <div class="text-center mb-12 fade-in">
+      <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 mb-4">Welcome, {{ request.user.username }}</h1>
+      {% if request.user.profile.photo %}
+      <img src="{{ request.user.profile.photo.url }}" class="mx-auto w-28 h-28 object-cover rounded-full border-4 border-indigo-500 shadow-lg pulse-ring" />
+      {% else %}
+      <div class="mx-auto w-28 h-28 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-2xl">{{ request.user.username|slice:":1" }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Posts Loop -->
+    <div class="grid gap-8">
+      {% for p in post %}
+      <article class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-white/20 hover:scale-[1.02] transition-all duration-300 fade-in">
+        <!-- Header -->
+        <div class="p-4 border-b dark:border-gray-700 flex items-center gap-4">
+          <div class="w-10 h-10 bg-indigo-500 text-white rounded-full flex items-center justify-center font-bold">{{ p.user|slice:":1" }}</div>
+          <div>
+            <p class="font-semibold text-gray-800 dark:text-white">{{ p.user }}</p>
+            <p class="text-sm text-gray-500">{{ p.created }}</p>
+          </div>
+        </div>
+
+        <!-- Image -->
+        {% if p.image %}
+        <div class="overflow-hidden">
+          <img src="{{ p.image.url }}" class="w-full h-80 object-cover hover:scale-105 transition-transform duration-500" />
+        </div>
+        {% endif %}
+
+        <!-- Content -->
+        <div class="p-6">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ p.title }}</h2>
+          <p class="text-gray-700 dark:text-gray-300">{{ p.caption }}</p>
+
+          <!-- Like, Comment UI -->
+          <div class="flex items-center gap-6 mt-4 border-t pt-4 dark:border-gray-700">
+            <!-- Like Button -->
+            <button id="{{p.id}}" class="btn_like flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-red-500" data-post-id="{{p.id}}">
+              {% if request.user in p.liked_by.all %}
+              <img src="{% static 'users/images/red_like.png' %}" class="w-6 h-6 like-icon" data-liked="true" />
+              {% else %}
+              <img src="{% static 'users/images/white_like.png' %}" class="w-6 h-6 like-icon" data-liked="false" />
+              {% endif %}
+              <span>Like</span>
+            </button>
+
+            <!-- Like Count -->
+            <div class="like-count-container text-sm text-gray-600 dark:text-gray-400" data-post-id="{{ p.id }}">
+              {% if p.liked_by.count == 1 %}
+              <span class="like-text">{{ p.liked_by.first }} likes this</span>
+              {% elif p.liked_by.count > 1 %}
+              <span class="like-text">{{ p.liked_by.first }} & {{ p.liked_by.count|sub:1 }} others like this</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Comments -->
+          <div class="mt-6 space-y-2">
+  <h3 class="font-semibold text-gray-800 dark:text-white">Comments:</h3>
+
+  {% for comment in p.comments.all %}
+  <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-md text-sm text-gray-900 dark:text-white">
+    <!-- Comment body -->
+    {{ comment.body }}
+    
+    <!-- Comment metadata -->
+    <div class="text-xs text-gray-500 mt-1">
+      — {{ comment.posted_by }} • {{ comment.created|date:"M d, Y H:i" }}
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-sm text-gray-500">No comments yet.</p>
+  {% endfor %}
+</div>
+
+
+          <!-- Add Comment -->
+          <form method="POST" class="mt-4 space-y-2">
+            {% csrf_token %}
+            <input type="hidden" name="post_id" value="{{ p.id }}">
+            <input type="hidden" name="posted_by" value="{{ logged_user }}">
+            {{ comment_form.body }}
+            <button type="submit" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition">💬 Add Comment</button>
+          </form>
+        </div>
+      </article>
+      {% empty %}
+      <p class="text-center text-gray-500">No posts yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-20px) rotate(180deg);
+    }
+  }
+
+  @keyframes floatDelayed {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(-180deg);
+    }
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+    }
+  }
+
+  @keyframes heartBeat {
+    0% {
+      transform: scale(1);
+    }
+    14% {
+      transform: scale(1.3);
+    }
+    28% {
+      transform: scale(1);
+    }
+    42% {
+      transform: scale(1.3);
+    }
+    70% {
+      transform: scale(1);
+    }
+  }
+
+  .fade-in {
+    animation: fadeInUp 0.8s ease-out both;
+  }
+
+  .fade-in:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .fade-in:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .fade-in:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+
+  .floating-orb {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .floating-orb-delayed {
+    animation: floatDelayed 8s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  .pulse-ring {
+    animation: pulse-ring 2s infinite;
+  }
+
+  /* Enhanced Like button styles */
+  .btn_like {
+    position: relative;
+    cursor: pointer;
+    border: none;
+    background: none;
+    outline: none;
+  }
+
+  .btn_like:hover .like-icon {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+  }
+
+  .btn_like:active .like-icon {
+    transform: scale(0.95);
+  }
+
+  .btn_like.loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .btn_like.liked .like-icon {
+    animation: heartBeat 0.6s ease-in-out;
+  }
+
+  /* Like count animation */
+  .like-count-container {
+    transition: all 0.3s ease;
+  }
+
+  .like-count-container.updating {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+
+  /* Glassmorphism effect */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+  }
+
+  /* Smooth transitions for all interactive elements */
+  button,
+  .btn_like {
+    transition: all 0.2s ease;
+  }
+</style>
+
+<!-- Enhanced JavaScript with Full Like Functionality -->
+<script type="text/javascript">
+  window.CSRF_TOKEN = "{{csrf_token}}";
+
+  $(document).on("click", ".btn_like", function (e) {
+    e.preventDefault();
+
+    let post_id = $(this).data("post-id") || this.id;
+    let button = $(this);
+    let likeIcon = button.find(".like-icon");
+    let likeCountContainer = $(
+      `.like-count-container[data-post-id="${post_id}"]`
+    );
+    let isCurrentlyLiked = likeIcon.data("liked");
+
+    console.log("=== LIKE REQUEST ===");
+    console.log("Post ID:", post_id);
+    console.log("Currently liked:", isCurrentlyLiked);
+
+    // Validate post_id
+    if (!post_id) {
+      console.error("No post ID found");
+      return;
+    }
+
+    // Add loading state and animation
+    button.addClass("loading");
+    likeCountContainer.addClass("updating");
+
+    // Add immediate visual feedback
+    if (!isCurrentlyLiked) {
+      button.addClass("liked");
+    }
+
+    $.ajax({
+      method: "POST",
+      url: "/posts/like/",
+      data: {
+        post_id: post_id,
+        csrfmiddlewaretoken: window.CSRF_TOKEN,
+      },
+      timeout: 10000,
+      success: function (data, textStatus, xhr) {
+        console.log("=== SUCCESS ===");
+        console.log("Response:", data);
+
+        if (data.success) {
+          // Update like icon with smooth transition
+          if (data.liked) {
+            likeIcon.attr("src", "{% static 'users/images/red_like.png' %}");
+            likeIcon.attr("alt", "Unlike");
+            likeIcon.data("liked", true);
+            button.addClass("liked");
+          } else {
+            likeIcon.attr("src", "{% static 'users/images/white_like.png' %}");
+            likeIcon.attr("alt", "Like");
+            likeIcon.data("liked", false);
+            button.removeClass("liked");
+          }
+
+          // Update like count display with enhanced styling
+          let likeCount = data.like_count || 0;
+          let likeText = "";
+
+          if (likeCount === 0) {
+            likeText = "";
+          } else if (likeCount === 1) {
+            likeText = data.liked
+              ? "{{ request.user.username }} likes this"
+              : "Someone likes this";
+          } else {
+            likeText = data.liked
+              ? `{{ request.user.username }} & ${
+                  likeCount - 1
+                } others like this`
+              : `${likeCount} people like this`;
+          }
+
+          // Update with heart icon
+          if (likeCount === 0) {
+            likeCountContainer.html("");
+          } else {
+            likeCountContainer.html(`
+              <span class="like-text flex items-center">
+                <svg class="w-4 h-4 mr-1 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                </svg>
+                ${likeText}
+              </span>
+            `);
+          }
+
+          // Add success animation
+          setTimeout(() => {
+            button.removeClass("liked");
+          }, 600);
+        } else {
+          console.error("Server returned success=false");
+          // Reset visual state on error
+          button.removeClass("liked");
+          alert("Failed to update like status");
+        }
+      },
+      error: function (xhr, textStatus, errorThrown) {
+        console.log("=== ERROR ===");
+        console.error("Status:", xhr.status);
+        console.error("Error:", errorThrown);
+        console.error("Response:", xhr.responseText);
+
+        // Reset visual state on error
+        button.removeClass("liked");
+
+        // Show user-friendly error messages
+        if (xhr.status === 404) {
+          alert(
+            "Like endpoint not found. Please check your URL configuration."
+          );
+        } else if (xhr.status === 500) {
+          alert("Server error occurred. Please try again.");
+        } else if (xhr.status === 403) {
+          alert("Permission denied. Please log in again.");
+        } else if (xhr.status === 0) {
+          alert("Network error. Please check your connection.");
+        } else {
+          alert("An error occurred. Please try again.");
+        }
+      },
+      complete: function () {
+        // Remove loading state
+        button.removeClass("loading");
+        likeCountContainer.removeClass("updating");
+        console.log("=== REQUEST COMPLETE ===");
+      },
+    });
+  });
+
+  // Optional: Add keyboard support for accessibility
+  $(document).on("keydown", ".btn_like", function (e) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      $(this).click();
+    }
+  });
+</script>
+{{ block.super }}
+{% endblock %}
+
