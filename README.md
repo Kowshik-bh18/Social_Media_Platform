@@ -9,12 +9,12 @@
 
 ### *Connect, Share, and Engage with the World*
 
-[Features](#-features) • [Demo](#-demo) • [Installation](#-installation) • [Tech Stack](#-tech-stack) • [Screenshots](#-screenshots)
+[Features](#-features) • [Installation](#-installation) • [Tech Stack](#-tech-stack) • [Usage](#-usage-guide)
 
 ---
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-success?style=for-the-badge)](your-demo-link)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/Kowshik-bh18/Social_Media_Platform)
+[![Stars](https://img.shields.io/github/stars/Kowshik-bh18/Social_Media_Platform?style=for-the-badge)](https://github.com/Kowshik-bh18/Social_Media_Platform/stargazers)
 
 </div>
 
@@ -339,26 +339,6 @@ The platform includes a powerful analytics dashboard for tracking your social me
 
 ---
 
-## 🎨 Screenshots
-
-<div align="center">
-
-### Home Feed
-*Clean, intuitive feed with infinite scroll and real-time updates*
-
-### User Profile
-*Customizable profiles with activity timeline and analytics*
-
-### Post Detail
-*Engaging post view with comments, likes, and sharing options*
-
-### Analytics Dashboard
-*Comprehensive metrics and growth visualization*
-
-</div>
-
----
-
 ## 🔮 Future Enhancements
 
 <table>
@@ -366,6 +346,8 @@ The platform includes a powerful analytics dashboard for tracking your social me
 <td width="50%">
 
 ### 🎯 Phase 1 - Short Term
+- [ ] Follow/Unfollow system
+- [ ] Save/Bookmark posts feature
 - [ ] Stories feature (24-hour posts)
 - [ ] Direct messaging system
 - [ ] Voice and video calls
@@ -374,8 +356,6 @@ The platform includes a powerful analytics dashboard for tracking your social me
 - [ ] Content recommendations AI
 - [ ] Multi-language support
 - [ ] Two-factor authentication
-- [ ] Follow/Unfollow system
-- [ ] Save/Bookmark posts feature
 
 </td>
 <td width="50%">
@@ -473,7 +453,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [![Email](https://img.shields.io/badge/Email-kowshikbh18@gmail.com-red?style=for-the-badge&logo=gmail)](mailto:kowshikbh18@gmail.com)
 [![GitHub](https://img.shields.io/badge/GitHub-Kowshik--bh18-black?style=for-the-badge&logo=github)](https://github.com/Kowshik-bh18)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-kowshikbh-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/kowshikbh)
-[![Portfolio](https://img.shields.io/badge/Portfolio-Visit-orange?style=for-the-badge&logo=google-chrome)](your-portfolio-link)
 
 </div>
 
